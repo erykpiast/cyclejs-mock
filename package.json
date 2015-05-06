@@ -1,5 +1,5 @@
 {
-  "name": "cyclejs-test",
+  "name": "cyclejs-mock",
   "version": "0.0.0",
   "author": "Eryk Napierala",
   "description": "Utility for testing applications based on CycleJS framework.",
