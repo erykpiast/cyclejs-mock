@@ -1,6 +1,6 @@
 {
   "name": "cyclejs-mock",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Eryk Napierala",
   "description": "Utility for testing applications based on CycleJS framework.",
   "license": "MIT",
