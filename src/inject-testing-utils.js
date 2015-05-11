@@ -23,7 +23,8 @@ export default function injectTestingUtils(fn) {
         .define('render', createElement)
         .define('getValues', getValues)
         .define('getMessages', getMessages)
-        .define('onNext', (...args) => Rx.ReactiveTest.onNext(...args));
+        .define('onNext', (...args) => Rx.ReactiveTest.onNext(...args))
+        .define('onCompleted', (...args) => Rx.ReactiveTest.onCompleted(...args));
 
 
     /**
@@ -31,7 +32,7 @@ export default function injectTestingUtils(fn) {
      * @returns {HotObservable}
      */
     function createObservable(...args) {
-        return scheduler.createColdObservable(...args).shareReplay(1);
+        return scheduler.createHotObservable(...args);
     }
 
 
@@ -55,7 +56,14 @@ export default function injectTestingUtils(fn) {
                 eventsMap[selector] = { };
             }
 
-            eventsMap[selector][event] = definitionObj[name];
+            if(definitionObj[name] instanceof Rx.Observable) {
+                eventsMap[selector][event] = definitionObj[name];
+            } else {
+                eventsMap[selector][event] = createObservable(
+                    scheduler,
+                    Rx.ReactiveTest.onNext(20, definitionObj[name])
+                );
+            }
         });
 
         return {
@@ -93,15 +101,14 @@ export default function injectTestingUtils(fn) {
                 providedArgs[name] = observables[name];
             } else {
                 providedArgs[name] = createObservable(
-                    scheduler,
-                    Rx.ReactiveTest.onNext(2, observables[name])
+                    Rx.ReactiveTest.onNext(11, observables[name])
                 );
             }
         });
 
         let fnArgs = getParametersNames(fn).map((name) => {
             if(!(providedArgs[name] instanceof Rx.Observable)) {
-                return createObservable(scheduler);
+                return createObservable();
             } else {
                 return providedArgs[name];
             }

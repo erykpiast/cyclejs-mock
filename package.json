@@ -28,6 +28,7 @@
     "babelify": "~6.0",
     "browserify": "~9.0",
     "chai": "~2.3",
+    "chai-equal-collection": "git://github.com/erykpiast/chai-equal-collection",
     "chai-spies": "~0.6",
     "chai-spies-tdd": "~0.1",
     "cyclejs": "~0.20",
