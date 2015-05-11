@@ -9,7 +9,7 @@ import spiesTdd from 'chai-spies-tdd';
 chai.use(spies);
 chai.use(spiesTdd);
 
-import { Rx } from 'cyclejs';
+import { Rx, h } from 'cyclejs';
 
 import equalCollection from 'chai-equal-collection';
 
@@ -342,6 +342,58 @@ suite('injectTestingUtils', () => {
             }, { });
         }));
 
+    });
+    
+    
+    suite('render', () => {
+
+        test('should return DOM tree for VirtualDOM one',
+        injectTestingUtils((render) => {
+            let vdom = h('div', {
+                className: 'xxx',
+                id: 'xyz'
+            }, [
+                'just text',
+                h('span', 'span 1'),
+                h('ul', [
+                    h('li', { key: 0 }, 'li 1'),
+                    h('li', { key: 1 }, 'li 2'),
+                    h('li', { key: 2 }, 'li 3'),
+                ])
+            ]);
+            
+            let rendered = render(vdom);
+
+            assert.equal(rendered.tagName, 'DIV');
+            assert.equal(rendered.className, 'xxx');
+            assert.equal(rendered.id, 'xyz');
+            assert.equal(rendered.childNodes.length, 3);
+            
+            assert.equal(rendered.childNodes[0].data, 'just text');
+            
+            assert.equal(rendered.childNodes[1].tagName, 'SPAN');
+            assert.equal(rendered.childNodes[1].childNodes.length, 1);
+            assert.equal(rendered.childNodes[1].childNodes[0].data, 'span 1');
+            
+            assert.equal(rendered.childNodes[2].tagName, 'UL');
+            assert.equal(rendered.childNodes[2].childNodes.length, 3);
+            
+            assert.equal(rendered.childNodes[2].childNodes[0].tagName, 'LI')
+            assert.isUndefined(rendered.childNodes[2].childNodes[0].key);
+            assert.equal(rendered.childNodes[2].childNodes[0].childNodes.length, 1)
+            assert.equal(rendered.childNodes[2].childNodes[0].childNodes[0].data, 'li 1');
+            
+            assert.equal(rendered.childNodes[2].childNodes[1].tagName, 'LI')
+            assert.isUndefined(rendered.childNodes[2].childNodes[1].key);
+            assert.equal(rendered.childNodes[2].childNodes[1].childNodes.length, 1)
+            assert.equal(rendered.childNodes[2].childNodes[1].childNodes[0].data, 'li 2');
+            
+            assert.equal(rendered.childNodes[2].childNodes[2].tagName, 'LI')
+            assert.isUndefined(rendered.childNodes[2].childNodes[2].key);
+            assert.equal(rendered.childNodes[2].childNodes[2].childNodes.length, 1)
+            assert.equal(rendered.childNodes[2].childNodes[2].childNodes[0].data, 'li 3');
+        }));
+        
     });
 
 });
