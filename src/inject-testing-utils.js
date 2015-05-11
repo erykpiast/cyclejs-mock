@@ -24,7 +24,8 @@ export default function injectTestingUtils(fn) {
         .define('getValues', getValues)
         .define('getMessages', getMessages)
         .define('onNext', (...args) => Rx.ReactiveTest.onNext(...args))
-        .define('onCompleted', (...args) => Rx.ReactiveTest.onCompleted(...args));
+        .define('onCompleted', (...args) => Rx.ReactiveTest.onCompleted(...args))
+        .define('onError', (...args) => Rx.ReactiveTest.onError(...args));
 
 
     /**

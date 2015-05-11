@@ -63,7 +63,8 @@ suite('injectTestingUtils', () => {
                 createObservable,
                 render,
                 onNext,
-                onCompleted
+                onCompleted,
+                onError
             ) => {
                 assert.isFunction(mockInteractions);
                 assert.isFunction(callWithObservables);
@@ -73,6 +74,7 @@ suite('injectTestingUtils', () => {
                 assert.isFunction(render);
                 assert.isFunction(onNext);
                 assert.isFunction(onCompleted);
+                assert.isFunction(onError);
             })();
 
         });
