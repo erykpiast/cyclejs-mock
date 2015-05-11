@@ -46,6 +46,22 @@ function injectTestingUtils(fn) {
         }
 
         return (_Rx$ReactiveTest = _Rx.Rx.ReactiveTest).onNext.apply(_Rx$ReactiveTest, args);
+    }).define('onCompleted', function () {
+        var _Rx$ReactiveTest2;
+
+        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+        }
+
+        return (_Rx$ReactiveTest2 = _Rx.Rx.ReactiveTest).onCompleted.apply(_Rx$ReactiveTest2, args);
+    }).define('onError', function () {
+        var _Rx$ReactiveTest3;
+
+        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+            args[_key3] = arguments[_key3];
+        }
+
+        return (_Rx$ReactiveTest3 = _Rx.Rx.ReactiveTest).onError.apply(_Rx$ReactiveTest3, args);
     });
 
     /**
@@ -53,11 +69,11 @@ function injectTestingUtils(fn) {
      * @returns {HotObservable}
      */
     function createObservable() {
-        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
+        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+            args[_key4] = arguments[_key4];
         }
 
-        return scheduler.createColdObservable.apply(scheduler, args).shareReplay(1);
+        return scheduler.createHotObservable.apply(scheduler, args);
     }
 
     /**
@@ -87,7 +103,11 @@ function injectTestingUtils(fn) {
                 eventsMap[selector] = {};
             }
 
-            eventsMap[selector][event] = definitionObj[name];
+            if (definitionObj[name] instanceof _Rx.Rx.Observable) {
+                eventsMap[selector][event] = definitionObj[name];
+            } else {
+                eventsMap[selector][event] = createObservable(scheduler, _Rx.Rx.ReactiveTest.onNext(20, definitionObj[name]));
+            }
         });
 
         return {
@@ -125,13 +145,13 @@ function injectTestingUtils(fn) {
             if (observables[name] instanceof _Rx.Rx.Observable) {
                 providedArgs[name] = observables[name];
             } else {
-                providedArgs[name] = createObservable(scheduler, _Rx.Rx.ReactiveTest.onNext(2, observables[name]));
+                providedArgs[name] = createObservable(_Rx.Rx.ReactiveTest.onNext(11, observables[name]));
             }
         });
 
         var fnArgs = _getParametersNames2['default'](fn).map(function (name) {
             if (!(providedArgs[name] instanceof _Rx.Rx.Observable)) {
-                return createObservable(scheduler);
+                return createObservable();
             } else {
                 return providedArgs[name];
             }
